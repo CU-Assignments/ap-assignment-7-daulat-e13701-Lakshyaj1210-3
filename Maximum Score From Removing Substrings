@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int maximumGain(string s, int x, int y) {
+        // Helper function to remove substrings and calculate points
+        auto removeSubstring = [](string& str, char first, char second, int points) -> int {
+            stack<char> st;
+            int score = 0;
+            for (char c : str) {
+                if (!st.empty() && st.top() == first && c == second) {
+                    st.pop(); // Remove the pair
+                    score += points; // Add points
+                } else {
+                    st.push(c);
+                }
+            }
+            // Rebuild remaining string
+            str = "";
+            while (!st.empty()) {
+                str = st.top() + str;
+                st.pop();
+            }
+            return score;
+        };
+
+        int totalScore = 0;
+        if (x > y) {
+            // Prioritize removing "ab"
+            totalScore += removeSubstring(s, 'a', 'b', x);
+            totalScore += removeSubstring(s, 'b', 'a', y);
+        } else {
+            // Prioritize removing "ba"
+            totalScore += removeSubstring(s, 'b', 'a', y);
+            totalScore += removeSubstring(s, 'a', 'b', x);
+        }
+        return totalScore;
+    }
+};
