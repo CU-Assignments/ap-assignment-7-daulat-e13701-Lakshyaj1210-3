@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minOperations(vector<int>& target, vector<int>& arr) {
+        unordered_map<int, int> indexMap;
+        for (int i = 0; i < target.size(); ++i) {
+            indexMap[target[i]] = i; // Map target values to their indices
+        }
+
+        vector<int> indices;
+        for (int num : arr) {
+            if (indexMap.count(num)) {
+                indices.push_back(indexMap[num]); // Replace with indices from target
+            }
+        }
+
+        // Find LIS on indices array
+        vector<int> lis;
+        for (int idx : indices) {
+            auto it = lower_bound(lis.begin(), lis.end(), idx);
+            if (it == lis.end()) {
+                lis.push_back(idx);
+            } else {
+                *it = idx;
+            }
+        }
+
+        return target.size() - lis.size(); // Minimum operations needed
+    }
+};
